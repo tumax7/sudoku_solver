@@ -110,6 +110,49 @@ bool solve(int sudoku[9][9],int row, int col){
 	return false;
 }
 
+bool find_zero(int sudoku[9][9],int loc[2]){
+	for (int i=0;i<9;i++){
+		for (int j=0;j<9;j++){
+			if (sudoku[i][j]==0){
+				loc[0] = i;
+				loc[1] = j;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+
+bool solve_backtracking(int sudoku[9][9]){
+
+	int zero_val[2];
+	int row;
+	int col;
+
+	if (not find_zero(sudoku,zero_val)){
+		return true;
+	}
+	else {
+		row = zero_val[0];
+		col = zero_val[1];
+
+	}
+	
+	// Start solving
+	for (int i=1; i<=9; i++){
+		if (possible_value_position(sudoku,row,col,i)){
+			sudoku[row][col] = i;
+
+			if (solve_backtracking(sudoku)){
+				return true;
+			}
+			sudoku[row][col] = 0;
+		}
+	}
+	
+	return false;
+}
 
 int main(){
 	int sudoku[9][9] = {{7,2,6,4,9,3,8,1,5},
@@ -123,7 +166,7 @@ int main(){
 			    {2,0,8,5,7,9,4,6,1}};
 	print_sudoku(sudoku);
 	cout << solved(sudoku)<< '\n';
-	solve(sudoku,0,0);
+	solve_backtracking(sudoku);
 	print_sudoku(sudoku);
 	cout << solved(sudoku)<< '\n';
 	return 0;
